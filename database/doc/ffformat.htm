@@ -1,0 +1,356 @@
+<HTML>
+<HEAD><TITLE>FHS - Family File Format</TITLE></HEAD>
+<BODY>
+<BLOCKQUOTE>
+<H2><CENTER>FHS - Family File Format</CENTER></H2>
+<HR>
+The purpose of this section is to satisfy the curiosity of the 2-3% of
+the users of the Family History System that want a more detailed
+description of the contents of the 3 datasets that comprise a family
+file.  If the following discussion makes little sense to you, you are
+really none the worse for it.<P>
+
+First I should remind you that a family file is really composed of
+three datasets (or collections of records of information) that are
+interconnected by a system of program maintained "pointer" fields.
+Each of the datasets is a standard BASIC random access file.
+Therefore all of the records in each dataset are of the same length
+and each record can be directly accessed by its record number without
+having to read the records preceding it in the file.  The three
+datasets that make up a family file are:<BR>
+<UL>
+<LI>NAME dataset, e.g. FAMILY.NAM, with 100 character records
+<LI>ADDRESS dataset, e.g. FAMILY.ADR, with 108 or 152 character
+records (depending on whether "short" or "long" address records are being used)
+<LI>and MISCELLANEOUS Info dataset, e.g. FAMILY.OTH, with 50 character
+records.
+</UL>
+Each record in these datasets is further "logically" divided into a
+number of fixed position "fields" of information.  The placement and
+purpose of each of these fields will be described below.  In that
+description, each field will be assigned a "DATA TYPE" by a 2
+character alphabetic symbol as follows:<BR>
+<UL>
+<LI>AC - ASCII Character - used for Text fields such as names and
+places; variable in length
+<LI>SI - Single Precision Integer - numeric field which can assume
+any value between (approximately) -32000 and +32000;
+each field is 2 characters long;
+<LI>BM - Bit mapped flag or status field; 1 character long.
+</UL>
+
+As mentioned previously, POINTER FIELDS are used to logically connect
+two separate records in a family file.  These fields are defined as
+single precision integers which has the effect of limiting the number
+of records in each of the family datasets to 32000.  (Prior to January
+1993 the name file was effectively limited to 9999 records because the
+onscreen data areas and the report fields for ID numbers allowed only
+4 digits).<P>
+
+Each Family History System dataset has a "HEADER Record" (the first
+record in the dataset) whose first character identifies the type
+dataset it is.  The header record has other fields which are used to
+store information needed by the system to process the dataset.  Among
+these fields are 3 that indicate the date and time that the associated
+NAME dataset was CREATED.  Using this DATE/TIME "Stamp" the programs
+can determine whether the family file datasets "go together" or
+"match".  Each "work" file header record also contains the DATE/TIME
+identifying fields for the family file used to create the work file so
+that the programs will know whether a work file matches a particular
+family file.  Note that the system can not distinguish (using the
+DATE/TIME fields) between family files which are copies of one another
+or which were created within the same minute of the same day.  
+Therefore if you are creating several separate family files, you shouldn't
+initialize them all at the same time (or within a minute of each other
+anyway).  You should also notice that the programs do not use the
+external name of the datasets to determine whether they go together.
+You may freely rename the datasets using the DOS RENAME command without 
+affecting the way the system will handle them.<P>
+
+One more remark concerning POINTER Field values...the actual file
+record number of the record pointed to is found by adding 1 to the
+pointer field value.  For example a pointer field which refers to the
+first NAME record will have a value of 1, although that NAME record is
+actually the 2nd record in the dataset because of the HEADER record
+at the beginning of the dataset.<P>
+
+Before presenting the record descriptions I should make one more
+comment concerning the stored formats for DATEs and TIMEs.  The system
+stores all dates in two SI fields:  One containing the value of the
+YEAR (YYYY) and a second which has the month and day combined
+according to the formula MM*100+DD.  Similarly, a TIME (HH:MM) is
+stored in a single SI field using the formula HH*100+MM.  (Better
+formulae would of course be: MM*256+DD and HH*256+MM, but I didn't
+think of that until after I had sent out the first version of the
+programs back in 1985.)<P>
+
+The record descriptions will be presented for each of the family file
+datasets in tables which have the following (unlabeled) columns:
+<UL>
+<LI>OFST - the offset into the record of the beginning of the field;
+(the number of bytes preceding the field in the record);
+<LI>TYPE - the 2 character DATA TYPE designation described previously;
+bit mapped fields will be followed by one or more descriptions of the 
+meanings of individual bits in the field;
+<LI>NAME - a short name describing the field
+<LI>DESC - a description of the field contents or its purpose.
+</UL>
+<HR>
+<PRE>
+  NAME DATASET - each record is 100 bytes (characters) long
+   1. HEADER RECORD
+        0  AC  FTYPE - File Type="N"
+        1  SI  NTYPE - Name File Format
+             		     (="0" for Original Format; ="1" for Long Place Name support)
+        3  SI  MAXID - largest ID# currently in the file
+        5  SI  CREYR - Year that the file was created
+        7  SI  CREMD - Month and Day that the file was created
+        9  SI  CRETM - Hour and Minute that the file was created
+       11  SI  UPDYR - Year that the Name Dataset was last updated
+       13  SI  UPDMD - Month and Day that the dataset was updated
+       15  SI  CHDTY - Year that record change indicators were reset
+       17  SI  CHDMD - Month and Day that change indicators were reset
+       19  SI  CHCT1 - # Name Records changed since last reset
+       21  SI  CHCT2 - # Extended Records changed since last reset
+
+   2. NAME RECORD
+      (Record PREFIX)
+        0  AC  RTYPE - Record Type=ASCII 01
+        1  SI  RID   - Record ID # (actual record number=RID+1)
+        3  SI  FID   - Father's ID # or 0
+        5  SI  MID   - Mother's ID # or 0
+        7  SI  OLDCH - RID of Oldest Child or 0
+        9  SI  FYSIB - RID of younger sibling with same father
+       11  SI  MYSIB - RID of younger sibling with same mother
+       13  SI  PLACE - RNO of Birth/Death PLACE record in ".OTH"
+       15  SI  LFAM  - RNO of latest SPOUSE or FAMILY record in ".OTH"
+       17  SI  ADOPT - an unimplemented pointer field intended to
+                       provide a more satisfactory handling of adoptions
+       19  SI  ADRS  - RNO of latest individual residence in ".ADR"
+       21  SI  COM   - RNO of first comment line in ".OTH"
+       23  SI  EDUC  - RNO of latest education record in ".OTH"
+       25  SI  WORK  - RNO of latest occupation record in ".OTH"
+       27  SI  MIL   - RNO of latest military record in ".OTH"
+       29  SI  HLTH  - RNO of latest medical record in ".OTH"
+       31  SI  EVENT - RNO of first Event record in ".OTH"
+       33  BM  STAT1 - STATUS Field
+           ......01 - FID status is * (adoptive relationship)
+           ......10 - FID status is ?
+           ....01.. - MID status is * (adoptive relationship)
+           ....10.. - MID status is ?
+           ..01.... - Birth date status is ?
+           ..10.... - Birth date status is !
+           01...... - Death date status is ?
+           10...... - Death date status is !
+       34  BM  STAT2 - STATUS Field
+           1....... - Married woman uses own surname
+           .1...... - Name Record Change bit
+           ..1..... - Extended Name Record Change bit
+           ......01 - Ancestor Interest level 1
+           ......10 - Ancestor Interest level 2
+           ......11 - Ancestor Interest level 3
+           ....01.. - Descendant Interest level 1
+           ....10.. - Descendant Interest level 2
+           ....11.. - Descendant Interest level 3
+      35  SI  FILL  - an unused pointer (or flag) field which will
+                      probably never be used because very early
+                      versions of the file update program left
+                      "garbage" in it.  The file validation program
+                      currently sets it to "0" if it does have a
+                      non-zero value in it.
+      (Record DATA)
+      37  AC  SEX   - individual's sex (M or F usually)
+      38  SI  BDYR  - year of birth
+      40  SI  BDMD  - month and day of birth
+      42  SI  BTM   - time of birth
+      44  SI  DDYR  - year of death (9999 if unknown)
+      46  SI  DDMD  - month and day of death
+      48  SI  DTM   - time of death
+      50  AC  SURNM - Surname
+      70  AC  GIVEN - Given Name
+     100 (end of record)
+<HR>
+  ADDRESS DATASET - each record is 108 bytes for Short Format address
+                    records or 152 bytes for the Long Format.
+   1. HEADER RECORD
+       0  AC  FTYPE - File Type="A"
+       1  SI  ATYPE - Address Format
+                      (="0" for Short Format, ="1" for long format)
+       3  SI  MAXRN - highest RNO of address record currently in file
+       5  SI  CREYR - Year that the file was created
+       7  SI  CREMD - Month and Day that the file was created
+       9  SI  CRETM - Hour and Minute that the file was created
+      11  SI  UPDYR - Year that the Address Dataset was last updated
+      13  SI  UPDMD - Month and Day that the dataset was updated
+      15  SI  FCHNB - first record in chain of free (or deleted) recs
+      17  SI  FCHNC - number of records on free (reusable) chain
+
+   2. ADDRESS RECORD
+      (Record Prefix)
+       0  AC  RTYPE - Record Type=ASCII 02
+       1  SI  RNO   - Record number (actual file record number=RNO+1)
+       3  AC  SRTYP - RTYPE of record to which address refers
+       4  SI  SRNO  - RNO (or RID) of record to which address refers
+       6  SI  NXTAD - RNO of next most recent address record
+       8  SI  COM   - RNO of first comment line in ".OTH"
+  
+      (Record DATA - "Short" Format)
+      10  SI  BGNYR - Year of beginning date for address
+      12  SI  BGNMD - Month and Day of beginning date for address
+      14  SI  ENDYR - Year of ending date for address
+      16  SI  ENDMD - Month and Day of ending date for address
+      18  SI  ACODE - 3 digit area code for phone number
+      20  SI  PRFX  - 3 digit prefix for phone number
+      22  SI  SUFX  - 4 digit suffix for phone number
+      24  AC  LINE1 - First line of address
+      54  AC  LINE2 - Second line of address
+      84  AC  CITY  - City name
+      99  AC  STATE - State
+     103  AC  ZIP   - 5 digit ZIP Code
+     108  (end of record)
+   
+     (Record DATA - "Long" Format)
+      10  SI  BGNYR - Year of beginning date for address
+      12  SI  BGNMD - Month and Day of beginning date for address
+      14  SI  ENDYR - Year of ending date for address
+      16  SI  ENDMD - Month and Day of ending date for address
+      18  AC  PHONE - Phone Number
+      32  AC  LINE1 - First line of address
+      62  AC  LINE2 - Second line of address
+      92  AC  CITY  - City name
+     112  AC  STATE - State
+     124  AC  POST  - ZIP/Postal Code
+     136  AC  CNTRY - Country
+     152  (end of record)
+<HR>
+  MISCELLANEOUS INFO DATASET - each record is 50 bytes long
+   1. HEADER RECORD
+       0  AC  FTYPE - File Type="M"
+       1  SI
+       3  SI  MAXRN - highest RNO of record currently in file
+       5  SI  CREYR - Year that the file was created
+       7  SI  CREMD - Month and Day that the file was created
+       9  SI  CRETM - Hour and Minute that the file was created
+      11  SI  UPDYR - Year that the Address Dataset was last updated
+      13  SI  UPDMD - Month and Day that the dataset was updated
+      15  SI  FCHNB - first record in chain of free (or deleted) recs
+      17  SI  FCHNC - number of records on free (reusable) chain
+   
+   2. SPOUSE or FAMILY RECORD
+      (Record Prefix)
+       0  AC  RTYPE - Record Type=ASCII 03
+       1  SI  RNO   - Record number (actual file record number=RNO+1)
+       3  AC  SRTYP - RTYPE of record to which marriage record is attached  (ASC 01)
+       4  SI  SP1ID - RID of one spouse
+       6  SI  SP1NX - RNO of next earlier family record for spouse 1
+       8  SI  ADRS  - RNO of most recent address record for family
+      10  SI  COM   - RNO of first comment line
+      
+      (Record Data)
+      12  SI  MDTYR - Year of marriage
+      14  SI  MDTMD - Month and Day of marriage
+      16  SI  EDTYR - Year of termination of marriage
+      18  SI  EDTMD - Month and Day of termination of marriage
+      20  SI  PLACE - RNO of Marriage/Divorce place record
+      22  SI  SP2ID - RID of second spouse
+      24  SI  SP2NX - RNO of next earlier family record for spouse 2
+      26  AC  BSTAT - Description of beginning status (e.g."Married")
+      38  AC  ESTAT - Description of ending status (e.g. "Wife died")
+      50  (end of record)
+
+   3. BIRTH/DEATH or MARRIAGE PLACE RECORD (original Style - 22 character place names)
+      (Record Prefix)
+       0  AC  RTYPE - Record Type=ASCII 04
+       1  SI  RNO   - Record number (actual file record number=RNO+1)
+       3  AC  SRTYP - RTYPE of record to which place names refer
+       4  SI  SRNO  - RNO (or RID) of record to which place names refer
+      (Record Data)
+       6  AC  PLAC1 - Birth place or beginning marriage place
+      28  AC  PLAC2 - Death place or ending marriage place
+      50  (end of record)
+
+   4. PLACE NAME RECORD  (New Style - August 98 - 41 character place names)
+      (Record Prefix)
+       0  AC  RTYPE - Record Type=ASCII 12
+       1  SI  RNO   - Record number (actual file record number=RNO+1)
+       3  AC  SRTYP - RTYPE of record to which place name refers
+       4  SI  SRNO  - RNO (or RID) of record to which place name refers
+      (Record Data)
+       6  SI  PLNXT - Next Place Name for source record 
+       8  AC  PTYPE - Type of Place Record (x'01'=Birth, x'02' =Death, x'03'=Marriage, x'04'=Divorce)
+       9  AC  PLACE - Place Name
+      50  (end of record)
+
+   5. COMMENT RECORD
+      (Record Prefix)
+       0  AC  RTYPE - Record Type=ASCII 05
+       1  SI  RNO   - Record number (actual file record number=RNO+1)
+       3  AC  SRTYP - RTYPE of record to which comment refers
+       4  SI  SRNO  - RNO (or RID) of record to which comment refers
+       6  SI  FPTR  - RNO of next comment record (=0 in last record)
+       8  SI  BPTR  - RNO of previous comment record
+                      (in first record=total # of comment lines)
+      10  SI  CCNT  - counter field
+      12  AC  TEXT  - text of comment line
+      50  (end of record)
+
+  6. EVENT RECORD
+      (Record Prefix)
+       0  AC  RTYPE - Record Type - ASCII value 06 (or 11)
+       1  SI  RNO   - Record number (actual file record number=RNO+1)
+       3  SI  SRNO  - RID of NAME record to which information applies
+       5  SI  SRC   - (Unimplemented) pointer to record in Source File
+       7  SI  COM   - RNO of first line of comments for event
+       9  SI  SRNX  - (Unimplemented) pointer to nxt ref for same source
+      (Record Data)
+      11  BI  IMPT  - Importance Level (0-255)
+      12  SI  D1Y   - Year of Event Date
+      14  SI  D1MD  - Month and Day of Event
+      16  AC  DSTA  - Character indicating date "status" (>,<, etc.)
+      17  AC  CODE  - Event Code
+      25  AC  PLAC  - Event Place
+      47  (end of record)
+
+   7. MISCELLANEOUS INFORMATION RECORDS
+      (Record Prefix)
+       0  AC  RTYPE - Record Type
+                      ASCII value 07 = Education Record
+                                  08 = Work Record
+                                  09 = Military Record
+                                  10 = Medical or Health Record
+       1  SI  RNO   - Record number (actual file record number=RNO+1)
+       3  AC  SRTYP - ASCII 01
+       4  SI  SRNO  - RID of NAME record to which information applies
+       6  SI  NXTAD - RNO of next most recent record of same type
+       8  SI  ADRS  - RNO of most recent address record
+      10  SI  COM   - RNO of first line of comments
+      (Record Data - all record types)
+      12  SI  BGNYR - Year of beginning date for information
+      14  SI  BGNMD - Month and Day of beginning date for information
+      16  SI  ENDYR - Year of ending date for information
+      18  SI  ENDMD - Month and Day of ending date for information
+     
+      (Record Data for Education)
+      20  AC  LEVEL - Level of Education (e.g. "H.S.", "COLLEGE")
+      28  AC  SUB1  - Major Subject #1
+      37  AC  SUB2  - Major Subject #2
+      46  AC  DEG   - Degree earned ("A.A.", "B.S.", "PhD.")
+      50  (end of record)
+
+      (Record Data for Occupation)
+      20  AC  OCCUP - Description of type work ("farmer", "lawyer")
+      50  (end of record)
+     
+      (Record Data for Military Info)
+      20  AC  RANK  - Description of military rank
+      42  AC  STAT  - Ending Status ("RETIRED", "MIA")
+      50  (end of record)
+
+      (Record Data for Medical Info)
+      20  AC  DIAG  - Diagnosed condition
+      42  AC  STAT  - Ending Status ("cured", "outgrown", "death")
+      50  (end of record)
+
+</PRE>
+</BODY>
+</HTML>

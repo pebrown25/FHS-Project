@@ -1,0 +1,67 @@
+<HTML>
+<HEAD><TITLE>FHS - Family File Description</TITLE></HEAD>
+<BODY>
+<BLOCKQUOTE>
+<H2><CENTER>FHS - Family File Description</CENTER></H2>
+<HR>
+<UL>
+<LI><A HREF="ffdiagrm.htm">Record Diagram</A> - Family 
+File Logical Record Structure
+<LI><A HREF="ffformat.htm">Field Descriptions</A> - Field 
+Breakdown of Family File Records
+<LI><A HREF="fflayout.txt">Basic Record Definitions</A> - MSBASIC Record Type Descriptions
+</UL>
+<B>SOME BACKGROUND</B><BR>
+Much of the time that I have spent on mainframe computers, from the early 1970's to the present, has  been involved  with an IBM database manager called IMS (Information Management System).  The database files managed by IMS are designed to store complex, variable length records of information in a very efficient manner.  When I first began writing a program for "computerising" the information in a booklet that recorded the descendants of a 5th generation ancestor of mine, it seemed natural to design the family file along the lines of an IMS database.  Let me take a few moments then to describe some of the characteristics of an IMS database in terms that I will go on to use in describing the FHS family file format.<P>
+
+In an IMS database, a database record consists of all items of information concerning a particular instance of the subject of the database.   For instance, if it were a database of schools, a database record for a school would include all items of information about the school.  Of course within a complete database record, some items of information are more closely related to one another than to other items in the record.  It is common to group logically related items of information together.  For instance, in a database record for a school, information about teachers might be grouped separately from information about classrooms.<P>
+
+In IMS terminology, a group of related items of information would be called a SEGMENT of the database, and in the example of a database of schools, all information about a teacher might be placed in a "Teacher Segment", with similar, but separate, segments for each teacher.  Similarly, all information about a student would be placed in a "Student Segment", with similar, but separate, segments for each student.  In this way a complete database record is broken down into many segments, with similar segments being grouped together as well.  Typically, the primary subject of the database, here the school, would be represented by a single segment of items of information which are unique to the subject, such as the name of the school, an identifying code, etc.<P>
+
+It is common to think of an IMS database record diagrammagically as a hierarchical arrangement of these SEGMENTs of information, with the single segment of information about the main subject of the database at the top, and other segments arranged beneath it, with similar SEGMENTs grouped together.  For example:<BR>
+<PRE>
+               +--------+
+               ! School !
+               +----+---+
+                    !
+             +------+-----+----------+-------->
+             !            !          !
+        +----+---+   +----+---+  +---+----+
+       +--------+!  +--------+!  ! Address!
+       ! Teacher!+  ! Student!+  +--------+
+       +--------+   +--------+
+</PRE>
+where each segment of information is represented by a box, with groups of similar segments being represented by "stacked" boxes.  Here the top segment is called the ROOT segment of the database record and subordinate segments are called CHILD segments...the ROOT Segment is called the PARENT of its children, and each occurrence of similar types of CHILD segments is called a TWIN.  (You can see why it seemed natural to me to use the IMS database model for designing a family file structure.)<P>
+
+IMS databases are designed so that a database record can allow for many types of segments, with many occurences of each segment type, and yet not have to "reserve" space for segments which may not be used within a particular database record.  This is done by storing each segment of information separately in the database file and using "pointer" fields to join together the segments that make up a complete database record.  In this way, the only space that has to be reserved ahead of time is that for the very small "pointer" field.  Further, the segments are joined together in such a way that only a single pointer field is required for each "group" of similar CHILD segment types.<P>
+
+Before going on to see how these ideas were used in the design of the FHS family file format, let me mention that, when storing IMS databases on disks, it is common to store certain segments of information separately from others (sometimes the grouping of segment types is based upon some physical characteristic, such as the total length of the items of information in the segment, at other times it is based upon the "logical" relationship of the segment to other types).  Each disk file of related segments is called a DATASET.  The complete set of Datasets with all of the segments of information is called the Database FILE.<P>
+
+<B>FHS FAMILY FILE DESIGN</B><BR>
+The FHS Family File design employs 11 SEGMENT Types, using the terminology described above. You may want to look at the <A HREF="ffdiagrm.htm">FHS Family File Structure Diagram</A> to see how these segments are logically related.  The Family File SEGMENT types are:<BR>
+<UL>
+<LI>NAME Segment - this is the ROOT Segment of each database record and contains such items as the Name (Surname and Given Name), Birth Date, and Death Date
+<LI>MARRIAGE Segment - representing a legal or social contract between two individuals
+<LI>PLACE Name Segment - A separate segment was allowed for place names BIRTH/DEATH, MARRIAGE/DIVORCE, so that unknown place names would not take up (very much) space on disk; unknown places only take up the space allowed for a "pointer" to a place name segment.  The place name segment is only created if there is information to place in it; (Note: a new "<A HREF="longplnm.htm">Long Place Name</A>" segment was added in August 1998.)
+<LI>ADDRESS Segment - representing an occurrence of a street address.  This could be an individual residence address, under a Name segment, a family residence under a marriage segment, or any of several other types of addresses that can be in a database record 
+<LI>COMMENT Segment - containing a line of text describing one of the other segments in the database
+<LI>EDUCATION Segment - describing a level of educational attainment
+<LI>MILITARY Segment - describing a level of military attainment
+<LI>OCCUPATION Segment - describing a type of employment
+<LI>MEDICAL Segment - describing a health record
+<LI>EVENT Segment (introduced in 97 update of FHS)- this is intended to make up for the original file design's failure to provide (outside of comments) such important information as Baptisms and Burials; it goes beyond that in allowing the user to record any type of occurrence that is associated with a specific date and place
+</UL>
+You will notice that there are no segments for the parents or children of an individual, although they are shown in the <A HREF="ffdiagrm.htm">Family File diagram</A>.  Actually, the parents and children are represented by NAME segments so there is no need for a separate segment type for them.  Each name record simply contains "pointer" fields for the Father, Mother which you fill in with the record numbers of each parent. The software maintains other "pointer fields" in the Name record for Oldest Child, Next Oldest Paternal Sibling, and Next Oldest Maternal Sibling, which, together with the parent pointers, permit maintaining a full record of "blood" relationships.<P>
+
+In the FHS manuals I have used the term RECORD instead of SEGMENT to refer to each of these groupings of information items. The "records" are stored on disk in three different datasets (you might think of each of these datasets as a box of 3x5 cards, or as a file drawer in a file cabinet).  The datasets are:<BR>
+<UL>
+<LI>NAME Dataset (e.g. FAMILY.NAM) containing the Name records
+<LI>ADDRESS Dataset (e.g. FAMILY.ADR) containing all of the Address records
+<LI>OTHER Information Dataset (e.g. FAMILY.OTH) containing all of the other types of records
+</UL>
+An FHS Family File consists of these three datasets containing all of the information about individuals in the family.  To make a backup copy of all of your family information you need only create copies of those three datasets.<P>
+
+If you are interested in a more detailed description of the way that individual items of information are stored in the different FHS Segments or Records, look at the <A HREF="ffformat.htm">Field Description Document</A> or the <A HREF="fflayout.txt">Microsoft Basic Record Definitions</A> for the FHS family file.
+</BLOCKQUOTE>
+</BODY>
+</HTML>

@@ -1,0 +1,19 @@
+<HTML>
+<HEAD><TITLE></TITLE></HEAD>
+<BODY>
+<BLOCKQUOTE>
+<H2><CENTER>FHS - Support for Long Place Names</CENTER></H2>
+<HR>
+In August 1998, changes were made to the Sept 97 update of FHS to provide support for Long Place Names; that is, Birth/Marriage/Divorce/Death or Event place names of 41 characters.  The previous limit had been 22 characters.  These changes included:
+<UL>
+<LI>Adding a new Long Place Name record (type x'12') to the <A HREF="ffformat.htm">family file format</A>.  When a family file supports long place names, the new record type will be used for storing Birth/Death (or Marriage/Divorce) place names for an individual (or marriage) if either of the place names is more than 22 characters long.  If both place names of a pair are <=22 characters then the old place name record (type x'04') will be used.  The new record will also be used to store Event record place names  that exceed 22 characters
+<LI>Providing a "File Conversion Option", Main Menu selection F3-D-1-F7-2, to allow Long Place Name support for a previously existing family file.  The "conversion" consists of a simple change to the "version number" of the Name Record file from "0" to "1".  This version number appears in the family file descriptive screen in the file update program. 
+<LI>Providing an option for including Long Place Name support in a newly INITialized FHS family file
+<LI>Providing a new report option, "Place Name Column Width", for columnar style of reports: ARPT, DRPT, RRPT, LIST, INDX to allow easy adjustment for the size of place name fields (larger column widths will require wider forms widths for printing the fixed format style of these reports)
+<LI>Modifying all programs that process place names to recognize the new place name record
+<LI>Modifying all screen formats that are used for entering place names to allow "horizontal scrolling" of the text when the length exceeds the size of the field that can be shown on the screen
+</UL>
+(NOTE: family files containing Long Place Name records will produce unpredictable results when used with versions of FHS prior to August 1998)
+</BLOCKQUOTE>
+</BODY>
+</HTML>

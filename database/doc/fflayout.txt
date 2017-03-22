@@ -1,0 +1,254 @@
+' ******************* FAM - Family File Record Formats *********************
+ TYPE NameFileHDR            ' FF1HDR
+      FTYPE   AS STRING * 1  ' "N" for "N"ame File
+      REVLVL  AS INTEGER     ' Revision Level for File Definition: x'0000'
+                             '   = x'0001' if support for Long Place Names
+      MAXID   AS INTEGER     ' Number of Name Records in File
+      REORGY  AS INTEGER
+      REORGMD AS INTEGER
+      REORGTM AS INTEGER
+      UPDTY   AS INTEGER
+      UPDTMD  AS INTEGER
+      CHGDTY  AS INTEGER
+      CHGDTMD AS INTEGER
+      CHGCNT1 AS INTEGER     ' Name Records Changed since last Reset
+      CHGCNT2 AS INTEGER     ' Extended Name Records Changed since last Reset
+'     F1HDRFILL AS STRING * 77
+ END TYPE
+
+ TYPE NameRecordFILLER       ' FF1FillRec
+      FILLER  AS STRING * 3
+      FAMPTR  AS STRING * 10
+      OTHRPTR AS STRING * 24
+      NRDATA  AS STRING * 63
+ END TYPE
+
+ TYPE NameRecord             ' FF1REC
+      RTYPE   AS STRING * 1   ' x'01'
+      ' 36 Bytes of pointers and switches
+      RID     AS INTEGER
+      FID     AS INTEGER
+      MID     AS INTEGER
+      OLDCH   AS INTEGER
+      FCH     AS INTEGER
+      MCH     AS INTEGER
+      BLOC    AS INTEGER
+      SPOUSE  AS INTEGER
+      ADOPT   AS INTEGER
+      ADRS    AS INTEGER
+      COM     AS INTEGER
+      EDUC    AS INTEGER
+      WORK    AS INTEGER
+      MIL     AS INTEGER
+      HLTH    AS INTEGER
+      EVENT   AS INTEGER
+      STATUS  AS STRING * 1
+      '          ......01  FID Status *
+      '          ......10  FID Status ?
+      '          ....01..  MID Status *
+      '          ....10..  MID Status ?
+      '          ..01....  BD Status ?
+      '          ..10....  BD Status !
+      '          01......  DD Status ?
+      '          10......  DD Status !
+      STATUS2 AS STRING * 1
+      '          1.......  Surname Use=Y
+      '          .1......  Name Record Change BIT
+      '          ..1.....  Extended Record Change BIT
+      '          ......01  Anc Interest Lvl 1
+      '          ......10  Anc Interest Lvl 2
+      '          ......11  Anc Interest Lvl 3
+      '          ....01..  Des Interest Lvl 1
+      '          ....10..  Des Interest Lvl 2
+      '          ....11..  Des Interest Lvl 3
+      UNUSED  AS STRING * 2
+      '  Here Begins the Data on the Individual
+      SEX     AS STRING * 1
+      BY      AS INTEGER
+      BMD     AS INTEGER  ' MM*100 + DD
+      BTM     AS INTEGER  ' HH*100 + MM
+      DY      AS INTEGER
+      DMD     AS INTEGER  ' MM*100 + DD
+      DTM     AS INTEGER  ' HH*100 + DD
+      SURNM   AS STRING * 20
+      GIVEN   AS STRING * 30
+ END TYPE
+
+ TYPE AddrFileHDR            ' FF2HDR - 19 Bytes of Prefix, 89 or 133 Suffix
+      FTYPE   AS STRING * 1  ' "A" for "A"ddress file
+      REVLVL  AS INTEGER     ' 0=Short Address, 1=Long Address
+      HIREC   AS INTEGER
+      REORGY  AS INTEGER
+      REORGMD AS INTEGER
+      REORGTM AS INTEGER
+      UPDTY   AS INTEGER
+      UPDTMD  AS INTEGER
+      FREEBGN AS INTEGER
+      FREECNT AS INTEGER
+      'HDRFILL AS STRING * NNN  ' NNN=89 Short Format, =133 Long Format
+ END TYPE
+
+ TYPE AddrPNTRS              ' 19 Bytes of Prefix
+      RTYPE   AS STRING * 1  ' x'02'
+      RNO     AS INTEGER
+      SRTYPE  AS STRING * 1
+      SRNO    AS INTEGER
+      NXT     AS INTEGER
+      COM     AS INTEGER
+      D1Y     AS INTEGER
+      D1MD    AS INTEGER
+      D2Y     AS INTEGER
+      D2MD    AS INTEGER
+ END TYPE
+
+ TYPE AddrRECORD1             ' FF2SREC - Format 1 - Short - 108 Bytes
+     'PNTRS   AS AddrPNTRS
+      FON1    AS INTEGER
+      FON2    AS INTEGER
+      FON3    AS INTEGER
+      LINE1   AS STRING * 30
+      LINE2   AS STRING * 30
+      CITY    AS STRING * 15
+      STATE   AS STRING * 4
+      ZIP     AS STRING * 5
+ END TYPE
+
+ TYPE AddrRECORD2             ' FF2LREC - Format 2 - Long - 152 Bytes
+     'PNTRS   AS AddrPNTRS
+      PHONE   AS STRING * 14
+      LINE1   AS STRING * 30
+      LINE2   AS STRING * 30
+      CITY    AS STRING * 20
+      STATE   AS STRING * 12
+      ZIP     AS STRING * 12
+      COUNTRY AS STRING * 16
+ END TYPE
+
+ TYPE OthrFileHDR             ' FF3HDR - 19 Bytes (+31 Bytes FILLER)
+      FTYPE   AS STRING * 1   ' "M" for "M"iscelaneous Information
+      REVLVL  AS INTEGER      ' Revision Level for File Definition
+      HIREC   AS INTEGER
+      REORGY  AS INTEGER
+      REORGMD AS INTEGER
+      REORGTM AS INTEGER
+      UPDTY   AS INTEGER
+      UPDTMD  AS INTEGER
+      FREEBGN AS INTEGER
+      FREECNT AS INTEGER
+ END TYPE
+
+ TYPE OthrFileRecPFX        ' FF3REC Prefix - 3 Bytes     (FF3PFX)
+      RTYPE   AS STRING * 1
+      RNO     AS INTEGER
+ END TYPE
+
+ TYPE OthrFamilyREC           ' FF3SPOUSE Record - 3+23+24 Bytes
+     'PFX     AS STRING * 3      ' RTYPE=CHR$(3)
+      SRTYPE  AS STRING * 1
+      SP1ID   AS INTEGER
+      SP1NXT  AS INTEGER
+      LOC     AS INTEGER         ' First Address Record
+      COM     AS INTEGER         ' First Comment Record
+      D1Y     AS INTEGER         ' Marriage Date
+      D1MD    AS INTEGER
+      D2Y     AS INTEGER         ' End of Marriage Date
+      D2MD    AS INTEGER
+      MLOC    AS INTEGER         ' Place of Marriage/Divorce
+      SP2ID   AS INTEGER
+      SP2NXT  AS INTEGER
+      STATUS1 AS STRING * 12
+      STATUS2 AS STRING * 12
+ END TYPE
+
+ TYPE OthrPlaceREC            ' FF3PLACE - 3+3+44
+     'PFX     AS STRING * 3      ' RTYPE=CHR$(4)
+      SRTYPE  AS STRING * 1
+      SRNO    AS INTEGER
+      PLACE1  AS STRING * 22
+      PLACE2  AS STRING * 22
+ END TYPE
+
+ TYPE LongPlaceNameREC        ' FF3PLACE2 
+      'PFX    AS STRING * 3      ' RTYPE=CHR$(12)
+      SRTYPE  AS STRING * 1
+      SRNO    AS INTEGER
+      PNEXT   AS INTEGER      ' paired place name record
+      PTYPE   AS STRING * 1   ' X'01'=Birth, x'02'=Death, x'03'=Marriage, x'04'=Divorce
+      PLACE   AS STRING * 41
+ END TYPE
+
+
+ TYPE OthrCommentREC          ' FF3COMMENT - 3+9+38 Bytes
+     'PFX     AS STRING * 3        ' RTYPE=CHR$(5)
+      SRTYPE  AS STRING * 1
+      SRNO    AS INTEGER
+      FPTR    AS INTEGER
+      BPTR    AS INTEGER
+      CCNT    AS INTEGER
+      TEXT    AS STRING * 38
+ END TYPE
+ 
+ TYPE OthrEventREC             ' FF3EVENT  - 47 Bytes
+     'PFX     AS STRING * 3        ' RTYPE=CHR$(6)
+      SRTYPE  AS STRING * 1
+      SRNO    AS INTEGER
+      NXT     AS INTEGER
+      SRC     AS INTEGER       ' Source Record Number
+      COM     AS INTEGER
+      SRCNXT  AS INTEGER       ' Next Reference Same Source
+      IMPORT  AS STRING * 1    ' Importance Level - CHR$(1-255)
+      D1Y     AS INTEGER
+      D1MD    AS INTEGER
+      DSTAT   AS STRING * 1    ' Date Status Character
+      CODE    AS STRING * 8    ' Event ID Code
+      PLACE   AS STRING * 22
+ END TYPE
+
+ TYPE OthrFileRecPNTRS        ' FF3PNTRS - Other Info Pointers - 17 Bytes
+     'PFX     AS STRING * 3
+      SRTYPE  AS STRING * 1
+      SRNO    AS INTEGER
+      NXT     AS INTEGER
+      LOC     AS INTEGER        ' First Address Record
+      COM     AS INTEGER        ' First Comment Record
+      D1Y     AS INTEGER        ' Begin Date
+      D1MD    AS INTEGER
+      D2Y     AS INTEGER        ' End Date
+      D2MD    AS INTEGER
+ END TYPE
+
+ TYPE OthrEducDATA             ' FF3EDUC - 30 Bytes
+      EDLEV   AS STRING * 8        ' RTYPE=CHR$(7)
+      EDSUB1  AS STRING * 9
+      EDSUB2  AS STRING * 9
+      EDDEG   AS STRING * 4
+ END TYPE
+
+ TYPE OthrWorkDATA             ' FF3WORK - 30 Bytes
+      WORKTP  AS STRING * 30       ' RTYPE=CHR$(8)
+ END TYPE
+
+ TYPE OthrMilitaryDATA         ' FF3MIL  - 30 Bytes
+      MILRANK AS STRING * 22       ' RTYPE=CHR$(9)
+      MILSTAT AS STRING * 8
+ END TYPE
+
+ TYPE OthrHealthDATA           ' FF3HEALTH - 30 Bytes
+      HLTHDIAG AS STRING * 22      ' RTYPE=CHR$(10)
+      HLTHSTAT AS STRING * 8
+ END TYPE
+
+' ********************** NDX - Index File Definition ********************
+
+ TYPE NDXFileHDR     ' 14 Bytes
+     FTYPE    AS STRING * 1     ' "X"
+     HS       AS STRING * 1     ' CHR$(14+2*SFCNT-128*HUSBSURNM)
+     REORGY   AS INTEGER
+     REORGMD  AS INTEGER
+     REORGTM  AS INTEGER
+     UPDTY    AS INTEGER
+     UPDTMD   AS INTEGER
+     NDXRECS  AS INTEGER
+     'SORTFLDS AS STRING * 8
+ END TYPE
+
