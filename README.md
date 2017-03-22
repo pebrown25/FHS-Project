@@ -20,3 +20,10 @@ adds the ability to process records in sorted sequence.
 The original FHS software has always been written in some form of Basic, from the original interpretive language
 BASIC A, through GW-BASIC, QuickBasic, and Microsoft Professional Basic (aka MSBasic).  The final version of that
 text-based program is labeled the "1997" version, but was actually maintained through 2001.
+
+In 1998-2000 I ported the program to MS Windows using Visual Basic. This version is labeled "FHSWIN".  I did a major
+revision in 2008, and it was maintained through 2012.
+
+Until 2012, the basic set of programs in the Family History System were provided as free "shareware", with extensions 
+and support available for a small fee.  I now contemplate placing the entire application in opensource, so that a 
+new generation of developers who share our common interests might continue and extend its usefulness.

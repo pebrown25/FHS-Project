@@ -1,0 +1,261 @@
+10
+"FILES   ","0195"
+"PRINTER ","0663"
+"SKEGTAB ","0840"
+"SCRNATR ","0956"
+"WINDOWS ","1039"
+"TABLES  ","1372"
+"GROUPS  ","1745"
+"REPORTS ","2851"
+"ACHTNODE","4581"
+"SBOXCHAR","5033"
+0,"OLDDATA","N","FAMILY.DAT"
+1,"NAME","F","FAMILY.NAM"
+2,"ADDRESS","F","FAMILY.ADR"
+3,"MISCINFO","F","FAMILY.OTH"
+4,"INDEX","F","FAMILY.NDX"
+5,"ANCESTOR","W","ANCESTOR.WRK"
+6,"DESCNDNT","W","DESCNDNT.WRK"
+7,"RELATIVE","W","RELATIVE.WRK"
+8,"NODEREF","W","NODEREF.WRK"
+9,"REFERENC","W","REPINDEX.REF"
+10,"SELECT","W","SELECT.WRK"
+11,"GEDCOM","T","TRANSFER.GED"
+12,"MAILMERG","T","MAILMERG.DAT"
+13,"TINYTAFL","R","TINYTAFL.TT"
+14,"REPORT","R","REPORT.FIL"
+"DEFAULT",1,"DEFAULT","DEFAULT","DEFAULT"
+"DEFAULT",1,132,66,0,1,0,0,3
+"DEFAULT",1,"+++-++!++++","++-++!+++","++-++!+++"
+"DEFAULT",1
+2
+27,64
+1
+15
+0
+0
+1
+13
+1
+12
+0
+42,9
+11,13,16,19,23,28,32,35,39,42
+1,2
+1,2,3
+1,2,4
+1,2,4,5
+6,7,8,9,10
+12,11,10,2
+1,2,5
+19,20,21,2
+1,2,22
+"COLOR",0,7,3,2,6,96,14,11,10,13,12,14
+"MONO",0,7,14,10,12,112,11,105,57,73,4,14
+10,13
+"FS",1,1,24,79,11,1
+"UL1",1,1,12,40,11,1
+"UR1",1,40,12,79,11,1
+"LL1",12,1,24,40,11,1
+"LR1",12,40,24,79,11,1
+"UH1",1,1,12,79,11,1
+"LH1",12,1,24,79,11,1
+"UH2",1,1,14,79,11,1
+"LH2",14,1,24,79,11,1
+"LL2",14,1,24,40,11,1
+"LR2",14,40,24,79,11,1
+"OPT",14,50,24,79,11,1
+"MSG",24,1,26,79,0,1
+25
+"TABLES",0,62
+"MONTHS",0,28
+"GENDER",0,55
+"DATEFMT",0,13
+"EVENTS",0,37
+"GROUPS",0,61
+"REPORTS",0,63
+"SINGLKEY",0,33
+"SOUNDEX",0,2
+"UCTRAN",0,3
+"RELCODES",0,55
+"RELRULES",0,14
+"PRINTERS",0,92
+"DATASETS",0,44
+"RPTFIELD",0,41
+"RPTTABLE",0,41
+"RPTOPTS",0,39
+"REFERENC",0,34
+"ALIGN",0,45
+"GEDCOM",0,56
+"MAILMERG",0,45
+"ERRMSGS",0,43
+"WORKTYPE",0,38
+"FILESTAT",0,38
+"SORTSEQ",0,4
+25
+"XXXX Common to Many Programs"
+"INIT Initialization Program"
+"MENU Main Menu Program"
+"UPDT F1       File Update Program"
+"RELR F2-A     Ancestor/Descendant/Relative Report Program"
+"GRPR F2-B     Family Group Report Program"
+"REGR F2-B-3   Register Report Program"
+"ACHT F2-C-1   Ancestor Chart/Map Program"
+"VBOX F2-C-2   Vertical BOX Chart Program"
+"HBOX F2-C-3   Horizontal BOX Chart Program"
+"LIST F2-D     Search/Select/LIST Program"
+"TTFL F2-E     Tiny Tafel Program"
+"RPIX F2-F     Report/Chart Index Report Program"
+"FILE F3-A     File Name Table"
+"CUST F3-B     Customization Program"
+"TABL F3-B-F4-1  Table Customization Program"
+"SFMT F3-B-F4-2  Screen Format Customization Program"
+"MSGS F3-B-F4-3  Message Text Customizaton Program"
+"RPTS F3-B-F5  Report Definition Customization Program"
+"PRTC F3-C     Printer Setup Table Program"
+"GDCM F3-D-1   GEDCOM Export/Import Program - PAF Format"
+"MLMG F3-D-2   MailMerge Export Program"
+"VLDT F3-E     Pointer Validation Program"
+"INDX F3-F     Index File Creation Program"
+"4PRT F3-4     Interface to 4PRINT Utility"
+42
+"SRCH F1       Search Results"
+"FSUM F1       File Summary"
+"ARPT F2-A-1   Ancestor Report"
+"ASUM F2-A-1   Ancestor Summary Report"
+"ADUP F2-A-1   Ancestor Duplicates Report"
+"DRPT F2-A-2   Descendant Report"
+"DSUM F2-A-2   Descendant Summary Report"
+"DDUP F2-A-2   Descendant Duplicates Report"
+"RRPT F2-A-3   Relative Report"
+"RSUM F2-A-3   Relative Table"
+"BLGR F2-B-1   Blank Family Group Form"
+"FXGR F2-B-1   Fixed Format Group Report"
+"FFGR F2-B-2   Free Format Group Report"
+"REGR          Register Style Group Report"
+"ACHT F2-C-1   Ancestor Chart - 4GEN Style"
+"AMAP F2-C-1   Ancestor MAP"
+"AVBX          Ancestor Chart - Vertical Box Format"
+"AHBX F2-C-3   Ancestor Chart - Horizontal Box Format"
+"DVBX F2-C-2   Descendant Chart - Vertical Box Format"
+"DHBX F2-C-3   Descendant Chart - Horizontal Box Format"
+"FPTH F2-C-3   Family Path Chart"
+"HSUM F2-C-(123)-(23.) Horizontal Box Chart Summary"
+"LIST F2-D     Information LIST"
+"ISUM F2-D     Indexed Summary Report"
+"TTFL F2-E     Tiny Tafel Listing"
+"TOCR F2-F     Report Table of Contents"
+"NDXR F2-F     Index Report"
+"FILE F3-A     File Definition Report"
+"TABL F3-B-F4-1 Table Entry List"
+"SFMT F3-B-F4-2 Screen Format List"
+"MSGS F3-B-F4-3 Message Table List"
+"RPTS F3-B-F5   Report Definition Report"
+"PRTC F3-C     Printer Setups Report"
+"GDIM F3-D-1   GEDCOM Import Options"
+"GDEX F3-D-1   GEDCOM Exporot Options"
+"GDLS F3-D-1   GEDCOM File Listing"
+"MMEX F3-D-2-F5 FHS MailMerge File Listing"
+"MMLS F3-D-2-F6 FHS MailMerge File Listing"
+"PVLD F3-E-1   Pointer Validation Error Report"
+"DVLD F3-E-2   Data Validation Error Report"
+"MDAT F3-E-3   Matching Data Summary Report"
+"INDX F3-F     Indexed File Listing"
+0,29
+4,13
+4,45
+44,5
+44,21
+44,37
+44,53
+85,1
+85,10
+85,17
+85,26
+85,33
+85,42
+85,49
+85,58
+126,0
+126,2
+126,9
+126,11
+126,16
+126,18
+126,25
+126,27
+126,32
+126,34
+126,41
+126,43
+126,48
+126,50
+126,57
+126,59
+0,0
+4,56
+0,32
+4,16
+4,48
+6,7
+6,23
+6,39
+6,55
+48,3
+48,11
+48,19
+48,27
+48,35
+48,43
+48,51
+48,59
+89,1
+89,5
+89,9
+89,13
+89,17
+89,21
+89,25
+89,29
+89,33
+89,37
+89,41
+89,45
+89,49
+89,53
+89,57
+89,61
+0,0
+4,60
+31
+218
+193
+191
+179
+180
+195
+196
+192
+194
+217
+218
+193
+191
+179
+180
+195
+196
+192
+194
+217
+197
+201
+207
+187
+186
+182
+199
+205
+200
+209
+188
